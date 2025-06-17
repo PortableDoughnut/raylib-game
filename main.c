@@ -1,21 +1,43 @@
 #include "raylib.h"
+#include "bullets.h"
+
 
 int main(void) {
-	InitWindow(800, 450, "Hello Raylib");
-	SetTargetFPS(60);
+	InitWindow(800, 450, "Bullet Them up!");
+	SetTargetFPS(100);
 
-	Vector2 position = { 400, 225 };
-	float speed = 200.0f;
+	Vector2 playerPos = { 400, 225 };
+	float playerSpeed = 300.0f;
+	float radius = 20.0f;
 	
+	Bullet bullets[MAX_BULLETS] = { 0 };
+	InitBullets(bullets);
+		
 	while (!WindowShouldClose()) {
-		if (IsKeyDown(KEY_RIGHT)) position.x += speed * GetFrameTime();
-		if (IsKeyDown(KEY_LEFT)) position.x -= speed * GetFrameTime();
-		if (IsKeyDown(KEY_UP)) position.y -= speed * GetFrameTime();
-		if (IsKeyDown(KEY_DOWN)) position.y += speed * GetFrameTime();
-
+		float dt = GetFrameTime();
+		
+		if (IsKeyDown(KEY_D)) playerPos.x += playerSpeed * GetFrameTime() * dt;
+		if (IsKeyDown(KEY_A)) playerPos.x -= playerSpeed * GetFrameTime() * dt;
+		if (IsKeyDown(KEY_W)) playerPos.y -= playerSpeed * GetFrameTime() * dt;
+		if (IsKeyDown(KEY_S)) playerPos.y += playerSpeed * GetFrameTime() * dt;
+		
+		if (position.x < radius) playerPos.x = radius;
+		if (position.x > 800 - radius) playerPos.x = 800 - radius;
+		if (position.y < radius) playerPos.y = radius;
+		if (position.y > 450 - radius) playerPos.y = 450 - radius;
+		
+		if (IsKeyPressed(KEY_SPACE)) {
+			ShootBullet(bullets, playerPos, (Vector2){0, -600});
+		}
+		
+		UpdateBullets(bullets, dt);
+		
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-		DrawCircleV(position, 20, RED);
+		
+		DrawCircleV(playerPos, 20, PINK);
+		DrawBullets(bullets);
+		
 		EndDrawing();
 	} 
 	
