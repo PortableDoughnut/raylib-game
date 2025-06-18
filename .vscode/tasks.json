@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "gcc",
+      "args": [
+        "main.c",
+        "bullets.c",
+        "-o",
+        "game",
+        "-I", "/opt/homebrew/include",
+        "-L", "/opt/homebrew/lib",
+        "-lraylib",
+        "-framework", "OpenGL",
+        "-framework", "Cocoa",
+        "-framework", "IOKit"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

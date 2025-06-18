@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "raymath.h"
 #include "bullets.h"
 
 
@@ -9,6 +10,8 @@ int main(void) {
 	Vector2 playerPos = { 400, 225 };
 	float playerSpeed = 300.0f;
 	float radius = 20.0f;
+
+	Vector2 facingDirection = {1, 0};
 	
 	Bullet bullets[MAX_BULLETS] = { 0 };
 	InitBullets(bullets);
@@ -16,18 +19,24 @@ int main(void) {
 	while (!WindowShouldClose()) {
 		float dt = GetFrameTime();
 		
-		if (IsKeyDown(KEY_D)) playerPos.x += playerSpeed * GetFrameTime() * dt;
-		if (IsKeyDown(KEY_A)) playerPos.x -= playerSpeed * GetFrameTime() * dt;
-		if (IsKeyDown(KEY_W)) playerPos.y -= playerSpeed * GetFrameTime() * dt;
-		if (IsKeyDown(KEY_S)) playerPos.y += playerSpeed * GetFrameTime() * dt;
+		Vector2 moveInput = { 
+		    (IsKeyDown(KEY_D) - IsKeyDown(KEY_A)), 
+		    (IsKeyDown(KEY_S) - IsKeyDown(KEY_W)) 
+		};
 		
-		if (position.x < radius) playerPos.x = radius;
-		if (position.x > 800 - radius) playerPos.x = 800 - radius;
-		if (position.y < radius) playerPos.y = radius;
-		if (position.y > 450 - radius) playerPos.y = 450 - radius;
+		if (moveInput.x != 0 || moveInput.y != 0) {
+		    moveInput = Vector2Normalize(moveInput);
+		    playerPos = Vector2Add(playerPos, Vector2Scale(moveInput, playerSpeed * dt));
+		    facingDirection = moveInput;
+		}
+		
+		if (playerPos.x < radius) playerPos.x = radius;
+		if (playerPos.x > 800 - radius) playerPos.x = 800 - radius;
+		if (playerPos.y < radius) playerPos.y = radius;
+		if (playerPos.y > 450 - radius) playerPos.y = 450 - radius;
 		
 		if (IsKeyPressed(KEY_SPACE)) {
-			ShootBullet(bullets, playerPos, (Vector2){0, -600});
+			ShootBullet(bullets, playerPos, (Vector2){facingDirection.x * 600, facingDirection.y * 600});
 		}
 		
 		UpdateBullets(bullets, dt);

@@ -13,7 +13,7 @@ void UpdateBullets(Bullet bullets[], float dt) {
             bullets[i].position.y += bullets[i].velocity.y * dt;
 
             if (bullets[i].position.y < 0 ||
-                bullets[i].position.y > 450 ||  // maybe pass in screen height later
+                bullets[i].position.y > 450 ||
                 bullets[i].position.x < 0 ||
                 bullets[i].position.x > 800)
             {
